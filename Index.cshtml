@@ -1,0 +1,91 @@
+@model LetterRequest
+@{ ViewData["Title"] = "Generate a Letter"; }
+
+<div class="page-header">
+    <h1>AI Letter Generator</h1>
+    <p class="subtitle">Describe what you need and let AI craft the perfect letter for you.</p>
+</div>
+
+<form asp-action="Generate" asp-controller="Letter" method="post">
+
+    <div class="card">
+        <h2>Quick Builder</h2>
+        <p class="hint">Fill in the fields below, or scroll down to use a custom prompt instead.</p>
+
+        <div class="form-grid">
+            <div class="form-group">
+                <label asp-for="LetterType">Letter type</label>
+                <select asp-for="LetterType" class="form-control">
+                    <option value="">— select type —</option>
+                    <option>Cover Letter</option>
+                    <option>Resignation Letter</option>
+                    <option>Recommendation Letter</option>
+                    <option>Complaint Letter</option>
+                    <option>Apology Letter</option>
+                    <option>Thank You Letter</option>
+                    <option>Business Proposal</option>
+                    <option>Request Letter</option>
+                    <option>Follow-Up Letter</option>
+                    <option>Introduction Letter</option>
+                    <option>Farewell Letter</option>
+                    <option>Appeal Letter</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Tone">Tone</label>
+                <select asp-for="Tone" class="form-control">
+                    <option>Professional</option>
+                    <option>Formal</option>
+                    <option>Friendly</option>
+                    <option>Persuasive</option>
+                    <option>Empathetic</option>
+                    <option>Assertive</option>
+                    <option>Casual</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="SenderName">Your name (sender)</label>
+                <input asp-for="SenderName" class="form-control" placeholder="e.g. John Smith" />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="RecipientName">Recipient name / role</label>
+                <input asp-for="RecipientName" class="form-control" placeholder="e.g. Hiring Manager, Dr. Jones" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Purpose">Purpose / main message</label>
+            <input asp-for="Purpose" class="form-control"
+                   placeholder="e.g. Applying for a Senior Developer position at Acme Corp" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="AdditionalDetails">Additional details <span class="optional">(optional)</span></label>
+            <textarea asp-for="AdditionalDetails" class="form-control" rows="3"
+                      placeholder="e.g. 5 years of C# experience, skills to highlight, specific points to include…"></textarea>
+        </div>
+    </div>
+
+    <div class="divider">
+        <span>or use a custom prompt</span>
+    </div>
+
+    <div class="card">
+        <h2>Custom Prompt</h2>
+        <p class="hint">Describe the letter in your own words. If filled, this overrides the fields above.</p>
+        <div class="form-group">
+            <label asp-for="CustomPrompt">Your prompt</label>
+            <textarea asp-for="CustomPrompt" class="form-control" rows="4"
+                      placeholder="e.g. Write a formal letter from a tenant to a landlord requesting urgent repairs to the heating system, mentioning it has been broken for two weeks and citing tenant rights."></textarea>
+        </div>
+    </div>
+
+    <div class="actions">
+        <button type="submit" class="btn-primary">
+            <span class="btn-icon">✦</span> Generate Letter
+        </button>
+    </div>
+</form>

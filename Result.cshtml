@@ -1,0 +1,93 @@
+@model LetterResult
+@{ ViewData["Title"] = "Your Letter"; }
+
+<div class="page-header">
+    <h1>Your Generated Letter</h1>
+    <a href="/" class="back-link">← Start a new letter</a>
+</div>
+
+@if (!Model.Success)
+{
+    <div class="alert alert-error">
+        <strong>Something went wrong</strong>
+        <p>@Model.ErrorMessage</p>
+        <a href="/" class="btn-secondary">Try again</a>
+    </div>
+}
+else
+{
+    <div class="result-grid">
+
+        <div class="letter-card">
+            <div class="letter-toolbar">
+                <span class="letter-label">Generated Letter</span>
+                <button class="btn-copy" onclick="copyLetter()">Copy</button>
+            </div>
+            <div class="letter-body" id="letterBody">@Model.GeneratedLetter</div>
+        </div>
+
+        <aside class="sidebar">
+            <div class="card">
+                <h3>Request details</h3>
+                @if (!string.IsNullOrWhiteSpace(Model.OriginalRequest.LetterType))
+                {
+                    <div class="detail-row"><span class="detail-label">Type</span><span>@Model.OriginalRequest.LetterType</span></div>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.OriginalRequest.Tone))
+                {
+                    <div class="detail-row"><span class="detail-label">Tone</span><span>@Model.OriginalRequest.Tone</span></div>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.OriginalRequest.SenderName))
+                {
+                    <div class="detail-row"><span class="detail-label">From</span><span>@Model.OriginalRequest.SenderName</span></div>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.OriginalRequest.RecipientName))
+                {
+                    <div class="detail-row"><span class="detail-label">To</span><span>@Model.OriginalRequest.RecipientName</span></div>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.OriginalRequest.Purpose))
+                {
+                    <div class="detail-row"><span class="detail-label">Purpose</span><span>@Model.OriginalRequest.Purpose</span></div>
+                }
+            </div>
+
+            <form asp-action="Regenerate" asp-controller="Letter" method="post">
+                <input type="hidden" name="LetterType" value="@Model.OriginalRequest.LetterType" />
+                <input type="hidden" name="Tone" value="@Model.OriginalRequest.Tone" />
+                <input type="hidden" name="SenderName" value="@Model.OriginalRequest.SenderName" />
+                <input type="hidden" name="RecipientName" value="@Model.OriginalRequest.RecipientName" />
+                <input type="hidden" name="Purpose" value="@Model.OriginalRequest.Purpose" />
+                <input type="hidden" name="AdditionalDetails" value="@Model.OriginalRequest.AdditionalDetails" />
+                <input type="hidden" name="CustomPrompt" value="@Model.OriginalRequest.CustomPrompt" />
+                <button type="submit" class="btn-secondary full-width">↺ Regenerate</button>
+            </form>
+
+            <button class="btn-outline full-width" onclick="printLetter()">⊞ Print</button>
+        </aside>
+
+    </div>
+
+    <div id="copy-toast" class="toast">Copied to clipboard!</div>
+}
+
+@section Scripts {
+<script>
+function copyLetter() {
+    const text = document.getElementById('letterBody').innerText;
+    navigator.clipboard.writeText(text).then(() => {
+        const toast = document.getElementById('copy-toast');
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+    });
+}
+function printLetter() {
+    const content = document.getElementById('letterBody').innerText;
+    const win = window.open('', '_blank');
+    win.document.write(`<html><head><title>Letter</title>
+    <style>body{font-family:Georgia,serif;max-width:700px;margin:60px auto;font-size:15px;line-height:1.8;white-space:pre-wrap;}</style>
+    </head><body>${content}</body></html>`);
+    win.document.close();
+    win.print();
+}
+</script>
+}
